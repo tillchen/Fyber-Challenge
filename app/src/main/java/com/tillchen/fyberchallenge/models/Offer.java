@@ -10,8 +10,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class Offer implements Parcelable {
+
     private String pictureUrl;
     private String title;
+
+    public Offer() {
+    }
 
     protected Offer(Parcel in) {
         pictureUrl = in.readString();
@@ -29,17 +33,6 @@ public class Offer implements Parcelable {
             return new Offer[size];
         }
     };
-
-    public Offer() {
-    }
-
-    public String getPictureUrl() {
-        return pictureUrl;
-    }
-
-    public String getTitle() {
-        return title;
-    }
 
     public static Offer fromJson(JSONObject jsonObject) {
         Offer offer = new Offer();
@@ -81,4 +74,13 @@ public class Offer implements Parcelable {
         dest.writeString(pictureUrl);
         dest.writeString(title);
     }
+
+    public String getPictureUrl() {
+        return pictureUrl;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
 }
