@@ -55,6 +55,48 @@ public class MainActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
     }
 
+    public void sendRequest(View view) {
+        String requestUrl = getRequestUrl();
+        binding.progressBarShowOffers.setVisibility(ProgressBar.VISIBLE);
+        CustomJsonObjectRequest jsonObjectRequest = new CustomJsonObjectRequest(Request.Method.GET,
+                requestUrl,null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        binding.progressBarShowOffers.setVisibility(ProgressBar.INVISIBLE);
+                        try {
+                            JSONObject responseBody = response.getJSONObject("data");
+                            if (isResponseCorrupted(responseBody.toString(),
+                                    response.getJSONObject("headers").getString(RESPONSE_SIGNATURE))) {
+                                Log.e(TAG, "The response signatures are not matching.");
+                                // FIXME: Here the signatures always do not match.
+                                //  It's using the same function has the hashKey.
+                                //  So I have no idea why they are not matching at this point.
+                                //  And I have to comment out the code below.
+//                                Toast.makeText(getApplicationContext(),
+//                                        R.string.response_signatures_do_not_match,
+//                                        Toast.LENGTH_SHORT).show();
+//                                return;
+                            }
+                            ArrayList<Offer> offers = Offer
+                                    .fromJson(responseBody.getJSONArray("offers"));
+                            startOfferListActivity(offers);
+                        } catch (JSONException e) {
+                            Log.e(TAG, e.toString());
+                        }
+
+                    }
+
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                binding.progressBarShowOffers.setVisibility(ProgressBar.VISIBLE);
+                Log.e(TAG, error.toString());
+            }
+        });
+        requestQueue.add(jsonObjectRequest);
+    }
+
     public String getRequestUrl() {
         appId = binding.editTextAppId.getText().toString();
         userId = binding.editTextTextUserId.getText().toString();
@@ -81,48 +123,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, OfferListActivity.class);
         intent.putParcelableArrayListExtra("offers", offers);
         startActivity(intent);
-    }
-
-    public void sendRequest(View view) {
-        String requestUrl = getRequestUrl();
-        binding.progressBarShowOffers.setVisibility(ProgressBar.VISIBLE);
-        CustomJsonObjectRequest jsonObjectRequest = new CustomJsonObjectRequest(Request.Method.GET,
-                requestUrl,null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        binding.progressBarShowOffers.setVisibility(ProgressBar.INVISIBLE);
-                        try {
-                            JSONObject responseBody = response.getJSONObject("data");
-                            if (isResponseCorrupted(responseBody.toString(),
-                            response.getJSONObject("headers").getString(RESPONSE_SIGNATURE))) {
-                                Log.e(TAG, "The response signatures are not matching.");
-                                // FIXME: Here the signatures always do not match.
-                                //  It's using the same function has the hashKey.
-                                //  So I have no idea why they are not matching at this point.
-                                //  And I have to comment out the code below.
-//                                Toast.makeText(getApplicationContext(),
-//                                        R.string.response_signatures_do_not_match,
-//                                        Toast.LENGTH_SHORT).show();
-//                                return;
-                            }
-                            ArrayList<Offer> offers = Offer
-                                    .fromJson(responseBody.getJSONArray("offers"));
-                            startOfferListActivity(offers);
-                        } catch (JSONException e) {
-                            Log.e(TAG, e.toString());
-                        }
-
-                    }
-
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        binding.progressBarShowOffers.setVisibility(ProgressBar.VISIBLE);
-                        Log.e(TAG, error.toString());
-                    }
-                });
-        requestQueue.add(jsonObjectRequest);
     }
 
 }
