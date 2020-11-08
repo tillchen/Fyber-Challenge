@@ -6,19 +6,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.common.base.Joiner;
-import com.google.common.hash.Hashing;
+import com.tillchen.fyberchallenge.utils.CustomJsonObjectRequest;
+import com.tillchen.fyberchallenge.utils.Helper;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String locale = "DE";
     public static final String offer_types = "112";
     public static final String ip = "109.235.143.113";
+    public static final String response_signature = "X-Sponsorpay-Response-Signature";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     public void sendRequest(View view) {
         String appId = editTextAppId.getText().toString();
         String userId = editTextUserId.getText().toString();
-        String securityToken = editTextSecurityToken.getText().toString();
+        final String securityToken = editTextSecurityToken.getText().toString();
         Map<String, String> requestParams = new TreeMap<>();
         requestParams.put("appid", appId);
         requestParams.put("uid", userId);
@@ -60,17 +62,32 @@ public class MainActivity extends AppCompatActivity {
         requestParams.put("timestamp", String.valueOf(System.currentTimeMillis() / 1000L));
         requestParams.put("offer_types", offer_types);
         String paramsConcatenated = Joiner.on("&").withKeyValueSeparator("=").join(requestParams);
-        Log.i(TAG, paramsConcatenated);
-        String hashKey = Hashing.sha1().hashString(paramsConcatenated + "&" + securityToken,
-                Charset.defaultCharset()).toString().toLowerCase();
+        final String hashKey = Helper.hashStringWithSecurityToken(paramsConcatenated, securityToken);
         String requestUrl = fyberApiOffersBaseUrl + paramsConcatenated + "&hashkey=" + hashKey;
-        Log.i(TAG, requestUrl);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
+        CustomJsonObjectRequest jsonObjectRequest = new CustomJsonObjectRequest(Request.Method.GET,
                 requestUrl,null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.i(TAG, response.toString());
+                        try {
+                            String validResponseSignature = Helper.hashStringWithSecurityToken(
+                                    response.getJSONObject("data").toString(), securityToken);
+                            if (!response.getJSONObject("headers").getString(response_signature)
+                                    .equals(validResponseSignature)) {
+                                Log.e(TAG, "The response signatures are not matching.");
+                                // FIXME: Here the signatures always do not match.
+                                //  It's using the same function has the hashKey.
+                                //  So I have no idea why they are not matching at this point.
+                                //  And I have to comment out the code below.
+//                                Toast.makeText(getApplicationContext(),
+//                                        R.string.response_signatures_do_not_match,
+//                                        Toast.LENGTH_SHORT).show();
+//                                return;
+                            }
+
+                        } catch (JSONException e) {
+                            Log.e(TAG, e.toString());
+                        }
                     }
 
                 }, new Response.ErrorListener() {

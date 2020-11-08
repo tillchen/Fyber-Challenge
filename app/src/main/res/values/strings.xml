@@ -11,4 +11,7 @@
 
     <string name="offer_title">Title</string>
     <string name="offer_picture">Offer Picture</string>
+
+    <string name="response_signatures_do_not_match">The response signatures are not matching.
+        Please try again.</string>
 </resources>
