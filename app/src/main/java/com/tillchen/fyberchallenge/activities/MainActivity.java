@@ -4,15 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.tillchen.fyberchallenge.R;
 import com.tillchen.fyberchallenge.databinding.ActivityMainBinding;
 import com.tillchen.fyberchallenge.models.Offer;
 import com.tillchen.fyberchallenge.utils.CustomJsonObjectRequest;
@@ -47,8 +50,20 @@ public class MainActivity extends AppCompatActivity {
 
     public void sendRequest(View view) {
         appId = binding.editTextAppId.getText().toString();
+        if (TextUtils.isEmpty(appId)) {
+            binding.editTextAppId.setError(getString(R.string.empty_app_id));
+            return;
+        }
         userId = binding.editTextTextUserId.getText().toString();
+        if (TextUtils.isEmpty(userId)) {
+            binding.editTextTextUserId.setError(getString(R.string.empty_user_id));
+            return;
+        }
         securityToken = binding.editTextTextSecurityToken.getText().toString();
+        if (TextUtils.isEmpty(securityToken)) {
+            binding.editTextTextSecurityToken.setError(getString(R.string.empty_security_token));
+            return;
+        }
         String requestUrl = RequestHelper.getRequestUrl(appId, userId, securityToken);
         binding.progressBarShowOffers.setVisibility(ProgressBar.VISIBLE);
         CustomJsonObjectRequest jsonObjectRequest = new CustomJsonObjectRequest(Request.Method.GET,
@@ -86,7 +101,9 @@ public class MainActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                binding.progressBarShowOffers.setVisibility(ProgressBar.VISIBLE);
+                binding.progressBarShowOffers.setVisibility(ProgressBar.INVISIBLE);
+                Toast.makeText(getApplicationContext(), R.string.response_error, Toast.LENGTH_SHORT)
+                        .show();
                 error.printStackTrace();
             }
         });

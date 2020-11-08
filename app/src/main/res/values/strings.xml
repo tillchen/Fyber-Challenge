@@ -14,4 +14,10 @@
 
     <string name="response_signatures_do_not_match">The response signatures are not matching.
         Please try again.</string>
+    <string name="response_error">An error occurred for the request.
+        Please try again or check the log.</string>
+    <string name="empty_app_id">Application ID can not be empty.</string>
+    <string name="empty_user_id">User ID can not be empty.</string>
+    <string name="empty_security_token">Security token can not be empty.</string>
+
 </resources>
