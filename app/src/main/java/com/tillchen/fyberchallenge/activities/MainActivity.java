@@ -71,8 +71,9 @@ public class MainActivity extends AppCompatActivity {
                                 Log.e(TAG, "The response signatures are not matching.");
                                 // FIXME: Here the signatures always do not match.
                                 //  It's using the same function has the hashKey.
-                                //  So I have no idea why they are not matching at this point.
-                                //  And I have to comment out the code below.
+                                //  And I have no idea why they are not matching at this point.
+                                //  So I have to comment out the code below.
+                                //  But I'd love to have a discussion with you to figure out why:).
 //                                Toast.makeText(getApplicationContext(),
 //                                        R.string.response_signatures_do_not_match,
 //                                        Toast.LENGTH_SHORT).show();
@@ -97,6 +98,13 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
     }
 
+    /**
+     * Gets the request URL.
+     *
+     * Here a TreeMap is used to make sure that the parameters are sorted, which is a requirement
+     * for computing the hashKey.
+     * @return The complete request URL.
+     */
     public String getRequestUrl() {
         appId = binding.editTextAppId.getText().toString();
         userId = binding.editTextTextUserId.getText().toString();
