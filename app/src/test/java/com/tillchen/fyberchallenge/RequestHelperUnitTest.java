@@ -36,4 +36,17 @@ public class RequestHelperUnitTest {
                 "1c915e3b5d42d05136185030892fbb846c278927");
         Assert.assertEquals(expected, actual);
     }
+
+    @Test
+    public void testIsResponseCorrupted() {
+        String securityToken = "1c915e3b5d42d05136185030892fbb846c278927";
+        String validSignature =
+                RequestHelper.hashStringWithSecurityToken("foo", securityToken);
+        Assert.assertFalse(RequestHelper.isResponseCorrupted(
+                "foo", securityToken, validSignature));
+        Assert.assertTrue(RequestHelper.isResponseCorrupted(
+                "fo", securityToken, validSignature
+        ));
+    }
+
 }
