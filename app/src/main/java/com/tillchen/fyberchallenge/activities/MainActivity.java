@@ -13,29 +13,19 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.google.common.base.Joiner;
 import com.tillchen.fyberchallenge.databinding.ActivityMainBinding;
 import com.tillchen.fyberchallenge.models.Offer;
 import com.tillchen.fyberchallenge.utils.CustomJsonObjectRequest;
-import com.tillchen.fyberchallenge.utils.Helper;
+import com.tillchen.fyberchallenge.utils.RequestHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = this.getClass().getSimpleName();
-
-    public static final String FYBER_API_OFFERS_BASE_URL
-            = "https://api.fyber.com/feed/v1/offers.json?";
-    public static final String LOCALE = "DE";
-    public static final String OFFER_TYPES = "112";
-    public static final String IP = "109.235.143.113";
-    public static final String RESPONSE_SIGNATURE = "X-Sponsorpay-Response-Signature";
 
     private RequestQueue requestQueue;
 
@@ -56,7 +46,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendRequest(View view) {
-        String requestUrl = getRequestUrl();
+        appId = binding.editTextAppId.getText().toString();
+        userId = binding.editTextTextUserId.getText().toString();
+        securityToken = binding.editTextTextSecurityToken.getText().toString();
+        String requestUrl = RequestHelper.getRequestUrl(appId, userId, securityToken);
         binding.progressBarShowOffers.setVisibility(ProgressBar.VISIBLE);
         CustomJsonObjectRequest jsonObjectRequest = new CustomJsonObjectRequest(Request.Method.GET,
                 requestUrl,null,
@@ -66,8 +59,10 @@ public class MainActivity extends AppCompatActivity {
                         binding.progressBarShowOffers.setVisibility(ProgressBar.INVISIBLE);
                         try {
                             JSONObject responseBody = response.getJSONObject("data");
-                            if (isResponseCorrupted(responseBody.toString(),
-                                    response.getJSONObject("headers").getString(RESPONSE_SIGNATURE))) {
+                            if (RequestHelper.isResponseCorrupted(responseBody.toString(),
+                                    response.getJSONObject("headers")
+                                            .getString(RequestHelper.RESPONSE_SIGNATURE),
+                                    securityToken)) {
                                 Log.e(TAG, "The response signatures are not matching.");
                                 // FIXME: Here the signatures always do not match.
                                 //  It's using the same function has the hashKey.
@@ -83,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                                     .fromJson(responseBody.getJSONArray("offers"));
                             startOfferListActivity(offers);
                         } catch (JSONException e) {
-                            Log.e(TAG, e.toString());
+                            e.printStackTrace();
                         }
 
                     }
@@ -92,39 +87,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 binding.progressBarShowOffers.setVisibility(ProgressBar.VISIBLE);
-                Log.e(TAG, error.toString());
+                error.printStackTrace();
             }
         });
         requestQueue.add(jsonObjectRequest);
-    }
-
-    /**
-     * Gets the request URL.
-     *
-     * Here a TreeMap is used to make sure that the parameters are sorted, which is a requirement
-     * for computing the hashKey.
-     * @return The complete request URL.
-     */
-    public String getRequestUrl() {
-        appId = binding.editTextAppId.getText().toString();
-        userId = binding.editTextTextUserId.getText().toString();
-        securityToken = binding.editTextTextSecurityToken.getText().toString();
-        Map<String, String> requestParams = new TreeMap<>();
-        requestParams.put("appid", appId);
-        requestParams.put("uid", userId);
-        requestParams.put("ip", IP);
-        requestParams.put("locale", LOCALE);
-        requestParams.put("timestamp", String.valueOf(System.currentTimeMillis() / 1000L));
-        requestParams.put("offer_types", OFFER_TYPES);
-        String paramsConcatenated = Joiner.on("&").withKeyValueSeparator("=").join(requestParams);
-        String hashKey = Helper.hashStringWithSecurityToken(paramsConcatenated, securityToken);
-        return FYBER_API_OFFERS_BASE_URL + paramsConcatenated + "&hashkey=" + hashKey;
-    }
-
-    public boolean isResponseCorrupted(String responseBody, String validSignature) {
-        String hashedResponseSignature = Helper.hashStringWithSecurityToken(
-                responseBody, securityToken);
-        return !hashedResponseSignature.equals(validSignature);
     }
 
     private void startOfferListActivity(ArrayList<Offer> offers) {
