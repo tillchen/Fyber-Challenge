@@ -20,7 +20,7 @@ public class RequestHelperUnitTest {
         String stringToHash = "appid=2070&ip=109.235.143.113&locale=DE&offer_types=112"
                 + "&timestamp=1604870998&uid=superman";
         String securityToken = "1c915e3b5d42d05136185030892fbb846c278927";
-        String actual = RequestHelper.hashStringWithSecurityToken(stringToHash, securityToken);
+        String actual = RequestHelper.hashParamsWithSecurityToken(stringToHash, securityToken);
         Assert.assertEquals(expected, actual);
     }
 
@@ -41,7 +41,7 @@ public class RequestHelperUnitTest {
     public void testIsResponseCorrupted() {
         String securityToken = "1c915e3b5d42d05136185030892fbb846c278927";
         String validSignature =
-                RequestHelper.hashStringWithSecurityToken("foo", securityToken);
+                RequestHelper.hashParamsWithSecurityToken("foo", securityToken);
         Assert.assertFalse(RequestHelper.isResponseCorrupted(
                 "foo", securityToken, validSignature));
         Assert.assertTrue(RequestHelper.isResponseCorrupted(

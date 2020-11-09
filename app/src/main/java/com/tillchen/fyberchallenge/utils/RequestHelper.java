@@ -1,5 +1,7 @@
 package com.tillchen.fyberchallenge.utils;
 
+import android.util.Log;
+
 import com.google.common.base.Joiner;
 import com.google.common.hash.Hashing;
 
@@ -17,6 +19,21 @@ public class RequestHelper {
     public static final String RESPONSE_SIGNATURE = "X-Sponsorpay-Response-Signature";
 
     /**
+     * Hash the string with "&" and the securityToken (API key) concatenated.
+     *
+     * Here SHA1 is used since it's required by the Fyber API, though it's deprecated by Guava as
+     * SHA256 is preferred.
+     *
+     * @param stringToHash The string to hash.
+     * @param securityToken The security token (API key) to concatenate.
+     * @return The hashed string.
+     */
+    static public String hashParamsWithSecurityToken(String stringToHash, String securityToken) {
+        return Hashing.sha1().hashString(stringToHash + "&" + securityToken,
+                Charset.defaultCharset()).toString();
+    }
+
+    /**
      * Hash the string with the securityToken (API key) concatenated.
      *
      * Here SHA1 is used since it's required by the Fyber API, though it's deprecated by Guava as
@@ -26,9 +43,9 @@ public class RequestHelper {
      * @param securityToken The security token (API key) to concatenate.
      * @return The hashed string.
      */
-    static public String hashStringWithSecurityToken(String stringToHash, String securityToken) {
-        return Hashing.sha1().hashString(stringToHash + "&" + securityToken,
-                Charset.defaultCharset()).toString().toLowerCase();
+    static public String hashResponseWithSecurityToken(String stringToHash, String securityToken) {
+        return Hashing.sha1().hashString(stringToHash.concat(securityToken),
+                Charset.defaultCharset()).toString();
     }
 
     /**
@@ -51,7 +68,7 @@ public class RequestHelper {
         requestParams.put("timestamp", String.valueOf(System.currentTimeMillis() / 1000L));
         requestParams.put("offer_types", OFFER_TYPES);
         String paramsConcatenated = Joiner.on("&").withKeyValueSeparator("=").join(requestParams);
-        String hashKey = RequestHelper.hashStringWithSecurityToken(paramsConcatenated, securityToken);
+        String hashKey = RequestHelper.hashParamsWithSecurityToken(paramsConcatenated, securityToken);
         return FYBER_API_OFFERS_BASE_URL + paramsConcatenated + "&hashkey=" + hashKey;
     }
 
@@ -64,7 +81,7 @@ public class RequestHelper {
      */
     static public boolean isResponseCorrupted(String responseBody, String securityToken,
                                        String validSignature) {
-        String hashedResponseSignature = RequestHelper.hashStringWithSecurityToken(
+        String hashedResponseSignature = RequestHelper.hashResponseWithSecurityToken(
                 responseBody, securityToken);
         return !hashedResponseSignature.equals(validSignature);
     }

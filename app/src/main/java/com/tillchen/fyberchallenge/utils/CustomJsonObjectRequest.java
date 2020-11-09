@@ -1,5 +1,7 @@
 package com.tillchen.fyberchallenge.utils;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 
 import com.android.volley.NetworkResponse;

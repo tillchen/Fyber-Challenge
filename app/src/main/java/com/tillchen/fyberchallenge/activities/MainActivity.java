@@ -80,9 +80,10 @@ public class MainActivity extends AppCompatActivity {
                                     securityToken)) {
                                 Log.e(TAG, "The response signatures are not matching.");
                                 // FIXME: Here the signatures always do not match.
-                                //  It's using the same function has the hashKey.
-                                //  And I have no idea why they are not matching at this point.
-                                //  So I have to comment out the code below.
+                                //  It's using a similar function has the hashKey.
+                                //  And I'm not sure why they are not matching at this point, though
+                                //  I suspect that toString() might have changed the response body.
+                                //  I have to comment out the code below.
                                 //  But I'd love to have a discussion with you to figure out why:).
 //                                Toast.makeText(getApplicationContext(),
 //                                        R.string.response_signatures_do_not_match,
