@@ -54,14 +54,14 @@ public class MainActivity extends AppCompatActivity {
             binding.editTextAppId.setError(getString(R.string.empty_app_id));
             return;
         }
-        userId = binding.editTextTextUserId.getText().toString();
+        userId = binding.editTextUserId.getText().toString();
         if (TextUtils.isEmpty(userId)) {
-            binding.editTextTextUserId.setError(getString(R.string.empty_user_id));
+            binding.editTextUserId.setError(getString(R.string.empty_user_id));
             return;
         }
-        securityToken = binding.editTextTextSecurityToken.getText().toString();
+        securityToken = binding.editTextSecurityToken.getText().toString();
         if (TextUtils.isEmpty(securityToken)) {
-            binding.editTextTextSecurityToken.setError(getString(R.string.empty_security_token));
+            binding.editTextSecurityToken.setError(getString(R.string.empty_security_token));
             return;
         }
         String requestUrl = RequestHelper.getRequestUrl(appId, userId, securityToken);

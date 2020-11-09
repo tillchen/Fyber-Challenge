@@ -22,7 +22,7 @@
         app:layout_constraintVertical_bias="0.1" />
 
     <EditText
-        android:id="@+id/editTextTextUserId"
+        android:id="@+id/editTextUserId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -36,7 +36,7 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextAppId" />
 
     <EditText
-        android:id="@+id/editTextTextSecurityToken"
+        android:id="@+id/editTextSecurityToken"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -45,9 +45,9 @@
         android:importantForAutofill="no"
         android:inputType="textMultiLine|text"
         android:text="@string/test_security_token"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextUserId"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextUserId"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextUserId" />
+        app:layout_constraintEnd_toEndOf="@+id/editTextUserId"
+        app:layout_constraintStart_toStartOf="@+id/editTextUserId"
+        app:layout_constraintTop_toBottomOf="@+id/editTextUserId" />
 
     <Button
         android:id="@+id/buttonShowOffers"
@@ -56,9 +56,9 @@
         android:layout_marginTop="24dp"
         android:onClick="sendRequest"
         android:text="@string/show_offers"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextSecurityToken"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextSecurityToken"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextSecurityToken" />
+        app:layout_constraintEnd_toEndOf="@+id/editTextSecurityToken"
+        app:layout_constraintStart_toStartOf="@+id/editTextSecurityToken"
+        app:layout_constraintTop_toBottomOf="@+id/editTextSecurityToken" />
 
     <ProgressBar
         android:id="@+id/progressBarShowOffers"
