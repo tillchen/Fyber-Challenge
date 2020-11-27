@@ -7,8 +7,8 @@ The Fyber Android challenge for the Mobile Developer role.
 ## Requirements
 
 The SDK:
-* [ ] Fetches the offers from the backend
-* [ ] Shows a view (Offer Wall) containing these offers
+* [x] Fetches the offers from the backend
+* [x] Shows a view (Offer Wall) containing these offers
 * [ ] Offer Wall has a close button
 * [ ] Offer Wall is dismissed when the user taps on the close button
 * [ ] Offer Wall is dismissed when the user taps on an offer

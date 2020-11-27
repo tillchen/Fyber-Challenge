@@ -28,5 +28,8 @@ class OfferListActivity : AppCompatActivity() {
         binding.recyclerViewOffers.adapter = adapter
         APICaller(this, appId, userId, securityToken).getOffers(adapter)
         binding.recyclerViewOffers.layoutManager = LinearLayoutManager(this)
+        binding.recyclerViewOffers.setOnClickListener {
+            finish()
+        }
     }
 }
