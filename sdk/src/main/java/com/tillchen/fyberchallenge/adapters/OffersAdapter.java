@@ -24,10 +24,15 @@ public class OffersAdapter extends RecyclerView.Adapter<OffersAdapter.ViewHolder
         }
     }
 
-    private final ArrayList<Offer> offers;
+    private ArrayList<Offer> offers;
 
-    public OffersAdapter(ArrayList<Offer> offers) {
+    public OffersAdapter() {
+        this.offers = new ArrayList<>();
+    }
+
+    public void setData(ArrayList<Offer> offers) {
         this.offers = offers;
+        notifyDataSetChanged();
     }
 
     @NonNull

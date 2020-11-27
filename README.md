@@ -13,4 +13,4 @@ The SDK:
 * [ ] Offer Wall is dismissed when the user taps on the close button
 * [ ] Offer Wall is dismissed when the user taps on an offer
 * [ ] Notifies the application via the pattern of your choice whether the user tapped on the close button or an offer.
-* [ ] Supports API level 16+.
+* [x] Supports API level 16+.
