@@ -1,2 +1,3 @@
+include ':fyberchallengesample'
 include ':sdk'
 rootProject.name = "Fyber Challenge"

@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Fyber Challenge Sample</string>
+    <string name="app_id">Application ID</string>
+    <string name="user_id">User ID</string>
+    <string name="security_token">Security Token</string>
+    <string name="show_offers">Show Offers</string>
+
+    <string name="test_app_id">2070</string>
+    <string name="test_user_id">superman</string>
+    <string name="test_security_token">1c915e3b5d42d05136185030892fbb846c278927</string>
+
+    <string name="offer_title">Title</string>
+    <string name="offer_picture">Offer Picture</string>
+
+    <string name="response_signatures_do_not_match">The response signatures are not matching.
+        Please try again.</string>
+    <string name="response_error">An error occurred for the request.
+        Please try again or check the log.</string>
+    <string name="empty_app_id">Application ID can not be empty.</string>
+    <string name="empty_user_id">User ID can not be empty.</string>
+    <string name="empty_security_token">Security token can not be empty.</string>
+
+</resources>
